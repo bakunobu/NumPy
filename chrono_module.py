@@ -4,6 +4,8 @@
 Created on Wed Jul 10 16:41:12 2019
 
 @author: bakunobu
+
+A simple performance test. Return the task's duration.
 """
 
 
