@@ -11,9 +11,13 @@ A simple performance test. Return the task's duration.
 
 from datetime import datetime
 
-def find_duration(task):
+def find_duration(task, n):
+    """
+    task for an one-argument function, n for an argument
+    """
     start = datetime.now()
-    task
+    result = task(n)
     delta = datetime.now() - start
-    return delta
+    return delta, result[-1]
+   
     
