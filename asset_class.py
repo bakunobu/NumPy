@@ -45,6 +45,12 @@ class Asset():
         self.stock_data = [np_read_csv(self.new_file,
                                        x+1) for x in range(len(h))]
         self.np_stock_data = np.array(self.stock_data, dtype='f8')
+#simple divided by zero control
+        for i in range(len(self.np_stock_data)):
+            for j in range(len(self.np_stock_data[i])):
+                if self.np_stock_data[i,j] == 0:
+                    self.np_stock_data[i,j] = np.mean(
+                            self.np_stock_data[i])
 
     
     # calculates Volume weighted average price
@@ -93,9 +99,35 @@ class Asset():
         self.pos_ret_indexes = np.where(self.returns > 0)
          
         
-        
+    def volatility(self):
+        self.ann_vol = np.std(self.logreturns) / np.mean(self.logreturns)
+        self.ann_vol_d = self.ann_vol / np.sqrt(1./252.)
+        self.mon_vol = self.ann_vol_d * np.sqrt(1./12.)
+        print('Volatility:')
+        print('Monthly = {:0.5f}'.format(self.mon_vol))
+        print('Annually = {:0.5f}'.format(self.ann_vol_d))     
         
     
+    def week_stats(self):
+        days_test = np.array(self.weekdays)
+        averages = np.zeros(5,)
+        week_days = ['Monday', 'Tuesday', 'Wednesday',
+                     'Thursday', 'Friday', 'Saturday', 'Sunday']
+        for i in range(5):
+            indices = np.where(days_test==i)
+            prices = np.take(self.np_stock_data[-3], indices)
+            aver = np.mean(prices)
+            averages[i] = aver
+            print('The average price on {}s was {:0.5f}.'.format(week_days[i],
+                  aver))
+        top = np.max(averages)
+        topday = np.argmax(averages)
+        bottom = np.min(averages)
+        bottomday = np.argmin(averages)
+        print('Top day of the week is {} with price {}'.format(week_days[topday],
+          top))
+        print('Bottom day of the week is {} with price {}'.format(
+            week_days[bottomday], bottom))
     
     
 
